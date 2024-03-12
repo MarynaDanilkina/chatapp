@@ -12,3 +12,18 @@ export const getList = createAsyncThunk(
     return data;
   },
 );
+export const createList = createAsyncThunk(
+  'main/createList',
+  async ({ listData }: { listData: ListProps }) => {
+    const response = await fetch('http://localhost:3004/todoList', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(listData),
+    });
+    const data = await response.json();
+    console.log(data);
+    return data;
+  },
+);

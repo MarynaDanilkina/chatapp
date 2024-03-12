@@ -18,6 +18,9 @@ body {
   flex-direction: column;
   gap: 20px;
 }
+.form_container{
+  width: 60vw;
+}
 button{
   padding: 5px 10px;
   border-radius: 8px;
@@ -30,5 +33,40 @@ button:hover{
 }
 .actions_container{
   display: flex;
+  gap: 10px;
+}
+.error{
+  color: #e10000;
+  font-size: 12px;
+}
+.label{
+  font-size: 16px;
+}
+.input_container{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.textArea_container{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+textarea,
+input{
+  border-radius: 7px;
+  border-color: #b9f5e4;
+  background-color: #eef7ff;
+  padding: 5px;
+}
+textarea{
+  height: 50px !important;
+}
+.ant-form-item {
+  margin: 0px !important;
+}
+.form_create{
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }

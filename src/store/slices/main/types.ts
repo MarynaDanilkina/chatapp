@@ -5,7 +5,7 @@ export type TInitialState = {
 };
 
 export type ListProps = {
-  id: number;
+  id?: number;
   done: boolean;
   title: string;
   description: string;
