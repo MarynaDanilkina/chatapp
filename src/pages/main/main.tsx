@@ -2,7 +2,11 @@ import Loading from 'components/Loading';
 import { useAppDispatch, useAppSelector } from 'interfaces/interfaces';
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { deleteList, getList } from 'store/slices/main/actions';
+import {
+  deleteList,
+  getList,
+  updateListDoneStatus,
+} from 'store/slices/main/actions';
 import { Checkbox, Table } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
@@ -16,8 +20,8 @@ const MainPage = () => {
 
   const { isLoading, done, list } = useAppSelector((state) => state.main);
 
-  const onChange = (e: CheckboxChangeEvent) => {
-    console.log('checked = ', e.target.checked);
+  const onChange = (e: CheckboxChangeEvent, id: string) => {
+    dispatch(updateListDoneStatus({ id: id, done: e.target.checked }));
   };
 
   const deleteTask = ({ id }: { id: string }) => {
@@ -38,7 +42,10 @@ const MainPage = () => {
       title: 'Done',
       render: (value) => (
         <div>
-          <Checkbox defaultChecked={value.done} onChange={onChange} />
+          <Checkbox
+            defaultChecked={value.done}
+            onChange={(e) => onChange(e, value.id)}
+          />
         </div>
       ),
     },

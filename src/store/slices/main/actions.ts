@@ -70,3 +70,17 @@ export const updateList = createAsyncThunk(
     return data;
   },
 );
+export const updateListDoneStatus = createAsyncThunk(
+  'main/updateListDoneStatus',
+  async ({ id, done }: { id: string; done: boolean }) => {
+    const response = await fetch(`http://localhost:3004/todoList/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ done }),
+    });
+    const data = await response.json();
+    return data;
+  },
+);
