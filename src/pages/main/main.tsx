@@ -2,7 +2,7 @@ import Loading from 'components/Loading';
 import { useAppDispatch, useAppSelector } from 'interfaces/interfaces';
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getList } from 'store/slices/main/actions';
+import { deleteList, getList } from 'store/slices/main/actions';
 import { Checkbox, Table } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { ListProps } from 'store/slices/main/types';
@@ -17,6 +17,12 @@ const MainPage = () => {
 
   const onChange = (e: CheckboxChangeEvent) => {
     console.log('checked = ', e.target.checked);
+  };
+
+  const deleteTask = ({ id }: { id: string }) => {
+    dispatch(deleteList({ listId: id })).then(() => {
+      dispatch(getList({ done }));
+    });
   };
 
   const columns: TableColumnsType<ListProps> = [
@@ -40,7 +46,7 @@ const MainPage = () => {
       title: 'Actions',
       render: (value) => (
         <div className="actions_container">
-          <button>
+          <button onClick={() => deleteTask({ id: value.id })}>
             <img src="/svg/delete.svg" alt="delete" width={20} height={20} />
           </button>
           <button>

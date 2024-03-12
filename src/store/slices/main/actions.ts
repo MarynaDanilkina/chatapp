@@ -23,6 +23,20 @@ export const createList = createAsyncThunk(
       body: JSON.stringify(listData),
     });
     const data = await response.json();
+    return data;
+  },
+);
+export const deleteList = createAsyncThunk(
+  'main/deleteList',
+  async ({ listId }: { listId: string }) => {
+    const response = await fetch(`http://localhost:3004/todoList/${listId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(listId),
+    });
+    const data = await response.json();
     console.log(data);
     return data;
   },
