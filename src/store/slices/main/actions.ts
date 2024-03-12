@@ -1,13 +1,20 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ListProps } from './types';
+import { ListProps, SortingOrder } from './types';
 
 export const getList = createAsyncThunk(
   'main/getList',
-  async ({ done }: { done?: boolean | null }) => {
-    const doneParams = done ? 'done=1' : '';
+  async ({ sort }: { sort?: SortingOrder }) => {
+    const doneParams =
+      sort === SortingOrder.Done
+        ? 'done=1'
+        : sort === SortingOrder.Undone
+          ? 'done=0'
+          : '';
     const url = `http://localhost:3004/todoList?${doneParams}`;
 
     const response = await fetch(url);
+    console.log(url);
+    console.log(sort);
     const data = (await response.json()) as ListProps[];
     return data;
   },

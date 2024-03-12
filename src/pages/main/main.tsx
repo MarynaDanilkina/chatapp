@@ -7,18 +7,19 @@ import {
   getList,
   updateListDoneStatus,
 } from 'store/slices/main/actions';
-import { Checkbox, Table } from 'antd';
+import { Checkbox, Form, Select, Table } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
-import { ListProps } from 'store/slices/main/types';
+import { ListProps, SortingOrder } from 'store/slices/main/types';
 import { ROUTES } from 'data/Routes';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { setSort } from 'store/slices/main';
 
 const MainPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, done, list } = useAppSelector((state) => state.main);
+  const { isLoading, list, sort } = useAppSelector((state) => state.main);
 
   const onChange = (e: CheckboxChangeEvent, id: string) => {
     dispatch(updateListDoneStatus({ id: id, done: e.target.checked }));
@@ -26,7 +27,7 @@ const MainPage = () => {
 
   const deleteTask = ({ id }: { id: string }) => {
     dispatch(deleteList({ listId: id })).then(() => {
-      dispatch(getList({ done }));
+      dispatch(getList({ sort }));
     });
   };
 
@@ -79,8 +80,10 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getList({ done }));
-  }, [dispatch, done]);
+    dispatch(getList({ sort }));
+  }, [dispatch, sort]);
+
+  console.log(sort);
 
   if (isLoading) {
     return <Loading />;
@@ -92,6 +95,16 @@ const MainPage = () => {
         <button className="button" onClick={goToCreate}>
           Create new task
         </button>
+        <Form.Item label="Sort by" className="sort-form_form-item">
+          <Select
+            defaultValue={sort}
+            options={Object.values(SortingOrder).map((el) => ({
+              label: el,
+              value: el,
+            }))}
+            onChange={(v) => dispatch(setSort(v))}
+          />
+        </Form.Item>
       </div>
       <Table
         className="main_table"

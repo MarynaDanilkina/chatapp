@@ -1,8 +1,8 @@
 export type TInitialState = {
   isLoading: boolean;
-  done: null | boolean;
   list: ListProps[];
   taskId: ListProps | null;
+  sort: SortingOrder.Default;
 };
 
 export type ListProps = {
@@ -11,3 +11,8 @@ export type ListProps = {
   title: string;
   description: string;
 };
+export enum SortingOrder {
+  Default = 'default',
+  Done = 'done',
+  Undone = 'undone',
+}

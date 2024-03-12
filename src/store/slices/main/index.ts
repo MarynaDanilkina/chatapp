@@ -1,19 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getList, getTaskId } from './actions';
 
-import type { TInitialState } from './types';
+import { SortingOrder, TInitialState } from './types';
 
 const initialState: TInitialState = {
   isLoading: true,
-  done: null,
   list: [],
   taskId: null,
+  sort: SortingOrder.Default,
 };
 
 export const mainReducer = createSlice({
   name: 'main',
   initialState,
-  reducers: {},
+  reducers: {
+    setSort(state, action) {
+      state.sort = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getList.pending, (state) => {
       state.isLoading = true;
@@ -28,5 +32,7 @@ export const mainReducer = createSlice({
     });
   },
 });
+
+export const { setSort } = mainReducer.actions;
 
 export default mainReducer.reducer;

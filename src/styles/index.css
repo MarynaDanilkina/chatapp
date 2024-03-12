@@ -28,6 +28,10 @@ button{
   border-color: #9cc4b6;
   cursor: pointer;
 }
+.button_container{
+  display: flex;
+  gap: 10px;
+}
 button:hover{
   background-color: #80dec4;
 }
