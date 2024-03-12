@@ -1,7 +1,7 @@
 import { schema as createTodoListSchema } from 'pages/create/create';
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getTaskId, updateList } from 'store/slices/main/actions';
+import { getList, getTaskId, updateList } from 'store/slices/main/actions';
 import { InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -26,7 +26,7 @@ const EditPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { taskId } = useAppSelector((state) => state.main);
+  const { taskId, sort } = useAppSelector((state) => state.main);
 
   const {
     register,

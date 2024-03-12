@@ -20,13 +20,11 @@ import {
 } from '@hello-pangea/dnd';
 
 const MainPage = () => {
-  const storedList = localStorage.getItem('list');
+  const storedList = localStorage.getItem('dnd');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isLoading, list, sort } = useAppSelector((state) => state.main);
-  const [newList, setNewList] = useState<Array<ListProps>>(
-    storedList ? JSON.parse(storedList) : list,
-  );
+  const [newList, setNewList] = useState(list);
 
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
@@ -34,7 +32,7 @@ const MainPage = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setNewList(items);
-    localStorage.setItem('list', JSON.stringify(items));
+    localStorage.setItem('dnd', JSON.stringify(items));
   }
 
   const onChange = (e: CheckboxChangeEvent, id: string) => {
@@ -56,14 +54,25 @@ const MainPage = () => {
   }, [dispatch, sort]);
 
   useEffect(() => {
-    setNewList(storedList ? JSON.parse(storedList) : list);
+    setNewList(list);
   }, [list]);
 
   useEffect(() => {
+    const clonedList = [...list];
     if (storedList) {
-      setNewList(JSON.parse(storedList));
+      const newStoredList = JSON.parse(storedList) as ListProps[];
+      clonedList.sort(function (a, b) {
+        const indexA = newStoredList.findIndex(function (el) {
+          return el.id === a.id;
+        });
+        const indexB = newStoredList.findIndex(function (el) {
+          return el.id === b.id;
+        });
+        return indexA - indexB;
+      });
     }
-  }, [storedList]);
+    setNewList(clonedList);
+  }, [storedList, list]);
 
   if (isLoading) {
     return <Loading />;
