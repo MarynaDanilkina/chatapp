@@ -33,7 +33,6 @@ const CreatePage = () => {
   });
 
   const onSubmit: SubmitHandler<IForm> = async (data) => {
-    console.log(data);
     dispatch(
       createList({
         listData: {

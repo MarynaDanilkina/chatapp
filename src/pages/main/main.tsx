@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { deleteList, getList } from 'store/slices/main/actions';
 import { Checkbox, Table } from 'antd';
 import type { TableColumnsType } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
 import { ListProps } from 'store/slices/main/types';
 import { ROUTES } from 'data/Routes';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
@@ -26,6 +27,13 @@ const MainPage = () => {
   };
 
   const columns: TableColumnsType<ListProps> = [
+    {
+      key: 'dragHandle',
+      dataIndex: 'dragHandle',
+      title: 'Drag',
+      width: 30,
+      render: () => <MenuOutlined />,
+    },
     {
       title: 'Done',
       render: (value) => (

@@ -37,7 +37,36 @@ export const deleteList = createAsyncThunk(
       body: JSON.stringify(listId),
     });
     const data = await response.json();
-    console.log(data);
+    return data;
+  },
+);
+export const getTaskId = createAsyncThunk(
+  'main/getTaskId',
+  async ({ id }: { id: string }) => {
+    const url = `http://localhost:3004/todoList/${id}`;
+
+    const response = await fetch(url);
+    const data = (await response.json()) as ListProps;
+    return data;
+  },
+);
+export const updateList = createAsyncThunk(
+  'main/updateList',
+  async ({
+    id,
+    updatedTaskData,
+  }: {
+    id: string;
+    updatedTaskData: ListProps;
+  }) => {
+    const response = await fetch(`http://localhost:3004/todoList/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedTaskData),
+    });
+    const data = await response.json();
     return data;
   },
 );
