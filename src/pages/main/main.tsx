@@ -1,25 +1,41 @@
 import Loading from 'components/Loading';
 import { useAppDispatch, useAppSelector } from 'interfaces/interfaces';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   deleteList,
   getList,
   updateListDoneStatus,
 } from 'store/slices/main/actions';
-import { Checkbox, Form, Select, Table } from 'antd';
-import type { TableColumnsType } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { Checkbox, Form, Select } from 'antd';
 import { ListProps, SortingOrder } from 'store/slices/main/types';
 import { ROUTES } from 'data/Routes';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { setSort } from 'store/slices/main';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from '@hello-pangea/dnd';
 
 const MainPage = () => {
+  const storedList = localStorage.getItem('list');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const { isLoading, list, sort } = useAppSelector((state) => state.main);
+  const [newList, setNewList] = useState<Array<ListProps>>(
+    storedList ? JSON.parse(storedList) : list,
+  );
+
+  function handleOnDragEnd(result: DropResult) {
+    if (!result.destination) return;
+    const items = Array.from(newList);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setNewList(items);
+    localStorage.setItem('list', JSON.stringify(items));
+  }
 
   const onChange = (e: CheckboxChangeEvent, id: string) => {
     dispatch(updateListDoneStatus({ id: id, done: e.target.checked }));
@@ -31,50 +47,6 @@ const MainPage = () => {
     });
   };
 
-  const columns: TableColumnsType<ListProps> = [
-    {
-      key: 'dragHandle',
-      dataIndex: 'dragHandle',
-      title: 'Drag',
-      width: 30,
-      render: () => <MenuOutlined />,
-    },
-    {
-      title: 'Done',
-      render: (value) => (
-        <div>
-          <Checkbox
-            defaultChecked={value.done}
-            onChange={(e) => onChange(e, value.id)}
-          />
-        </div>
-      ),
-    },
-    {
-      title: 'Title',
-      dataIndex: 'title',
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    {
-      title: 'Actions',
-      render: (value) => (
-        <div className="actions_container">
-          <button onClick={() => deleteTask({ id: value.id })}>
-            <img src="/svg/delete.svg" alt="delete" width={20} height={20} />
-          </button>
-          <button>
-            <Link to={`${ROUTES.EDIT}/${value.id}`}>
-              <img src="/svg/edit.svg" alt="edit" width={20} height={20} />
-            </Link>
-          </button>
-        </div>
-      ),
-    },
-  ];
-
   const goToCreate = () => {
     navigate(ROUTES.CREATE);
   };
@@ -83,7 +55,15 @@ const MainPage = () => {
     dispatch(getList({ sort }));
   }, [dispatch, sort]);
 
-  console.log(sort);
+  useEffect(() => {
+    setNewList(storedList ? JSON.parse(storedList) : list);
+  }, [list]);
+
+  useEffect(() => {
+    if (storedList) {
+      setNewList(JSON.parse(storedList));
+    }
+  }, [storedList]);
 
   if (isLoading) {
     return <Loading />;
@@ -106,13 +86,61 @@ const MainPage = () => {
           />
         </Form.Item>
       </div>
-      <Table
-        className="main_table"
-        pagination={false}
-        rowKey="id"
-        columns={columns}
-        dataSource={list}
-      />
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="list">
+          {(provided) => (
+            <ul
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="wrapper_list"
+            >
+              {newList.map(({ id, title, description, done }, index) => {
+                return (
+                  <Draggable key={id} draggableId={id!} index={index}>
+                    {(provided) => (
+                      <li
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <div className="done">
+                          <Checkbox
+                            defaultChecked={done}
+                            onChange={(e) => onChange(e, id!)}
+                          />
+                        </div>
+                        <p className="title">{title}</p>
+                        <p className="description">{description}</p>
+                        <div className="actions_container">
+                          <button onClick={() => deleteTask({ id: id! })}>
+                            <img
+                              src="/svg/delete.svg"
+                              alt="delete"
+                              width={20}
+                              height={20}
+                            />
+                          </button>
+                          <button>
+                            <Link to={`${ROUTES.EDIT}/${id}`}>
+                              <img
+                                src="/svg/edit.svg"
+                                alt="edit"
+                                width={20}
+                                height={20}
+                              />
+                            </Link>
+                          </button>
+                        </div>
+                      </li>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
+            </ul>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };

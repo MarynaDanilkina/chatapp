@@ -12,6 +12,31 @@ body {
   margin: 40px 0px;
   width: 100%;
 }
+ul{
+  margin: 0px;
+  padding: 5px;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+li{
+  display: flex;
+  padding: 15px;
+  align-items: center;
+  border: solid 1px #ffffff;
+  background-color: #cbd6e0;
+}
+.done{
+  width: 14vw;
+  display: flex;
+}
+.title{
+  width: 16vw;
+  font-size: 14px;
+}
+.description{
+  width: 23vw;
+  font-size: 14px;
+}
 .main_container{
   width: 80vw;
   display: flex;

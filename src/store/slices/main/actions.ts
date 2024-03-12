@@ -13,8 +13,6 @@ export const getList = createAsyncThunk(
     const url = `http://localhost:3004/todoList?${doneParams}`;
 
     const response = await fetch(url);
-    console.log(url);
-    console.log(sort);
     const data = (await response.json()) as ListProps[];
     return data;
   },
